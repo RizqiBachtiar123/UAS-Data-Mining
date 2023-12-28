@@ -51,12 +51,12 @@ def kmeans_clustering(df, optimal_k):
 # Visualisasi cluster
 def visualize_clusters(df):
     # Visualisasikan cluster
-    plt.figure(figsize=(12, 8))
+    fig, ax = plt.subplots(figsize=(12, 8))
     sns.scatterplot(x='Check_In_Out_Diff', y='Employee_ID*', hue='Cluster', data=df, palette='viridis', s=100)
     plt.title('K-Means Clustering Data Absensi Karyawan')
     plt.xlabel('Waktu Check-In ke Check-Out (jam)')
     plt.ylabel('ID Karyawan')
-    st.pyplot()
+    st.pyplot(fig)
 
 def main():
     # Memuat data

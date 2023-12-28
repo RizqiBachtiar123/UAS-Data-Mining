@@ -58,6 +58,39 @@ def visualize_clusters(df):
     plt.ylabel('ID Karyawan')
     st.pyplot(fig)
 
+# Tampilkan tabel karyawan berdasarkan clustering
+def display_clustered_table(df, optimal_k, cluster_explanations):
+    st.subheader(f'Tabel Karyawan Berdasarkan Clustering (Jumlah Cluster = {optimal_k})')
+
+    # Hapus duplikat ID Karyawan
+    df_unique_employee = df.drop_duplicates(subset=['Employee_ID*'])
+
+    # Urutkan DataFrame berdasarkan 'Employee_ID*' dan 'Cluster'
+    df_unique_employee = df_unique_employee.sort_values(by=['Employee_ID*', 'Cluster'])
+
+    # Reset indeks untuk mengurutkan nomor baris
+    df_unique_employee = df_unique_employee.reset_index(drop=True)
+
+    # Hapus kolom yang tidak perlu ditampilkan
+    df_display = df_unique_employee[['Employee_ID*', 'Cluster']]
+    
+    # Tambahkan kolom penjelasan cluster pada tabel
+    df_display['Cluster Explanation'] = df_unique_employee['Cluster'].map(cluster_explanations)
+
+    st.table(df_display)
+
+# Jelaskan setiap cluster
+def explain_clusters(optimal_k):
+    st.subheader('Penjelasan Cluster:')
+    cluster_explanations = {}
+
+    for cluster in range(optimal_k):
+        st.write(f'**Cluster {cluster + 1}:**')
+        explanation = st.text_area(f'Masukkan penjelasan tentang karakteristik Cluster {cluster + 1}:')
+        cluster_explanations[cluster] = explanation
+
+    return cluster_explanations
+
 def main():
     # Memuat data
     df = load_data()
@@ -91,6 +124,12 @@ def main():
 
     # Visualisasi cluster
     visualize_clusters(df)
+
+    # Jelaskan setiap cluster
+    cluster_explanations = explain_clusters(optimal_k)
+
+    # Tampilkan tabel karyawan berdasarkan clustering
+    display_clustered_table(df, optimal_k, cluster_explanations)
 
 if __name__ == '__main__':
     main()
